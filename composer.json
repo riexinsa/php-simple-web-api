@@ -1,5 +1,5 @@
 {
-    "name": "riexinsa/php-web-api",
+    "name": "riexinsa/php-simple-web-api",
     "description": "A little framwork to easily create a web api with PHP.",
     "type": "library",
     "license": "MIT",
