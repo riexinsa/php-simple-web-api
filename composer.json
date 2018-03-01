@@ -1,0 +1,18 @@
+{
+    "name": "riexinsa/php-web-api",
+    "description": "A little framwork to easily create a web api with PHP.",
+    "type": "library",
+    "license": "mit",
+    "authors": [
+        {
+            "name": "Sascha Riexinger",
+            "email": "sascha.riexinger@fmi.uni-stuttgart.de"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4":{
+            "PHPWebAPI\\" : "src/"
+        }
+    }
+}
