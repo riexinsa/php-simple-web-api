@@ -1,5 +1,4 @@
 <?php
-
 /*
  * (c) Sascha Riexinger <sascha.riexinger@fmi.uni-stuttgart.de>
  *
@@ -8,7 +7,6 @@
  */
 
 namespace PHPWebAPI;
-
 
 class APIController
 {
