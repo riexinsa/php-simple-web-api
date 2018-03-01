@@ -1,4 +1,5 @@
 <?php
+
 /*
  * (c) Sascha Riexinger <sascha.riexinger@fmi.uni-stuttgart.de>
  *

@@ -7,6 +7,8 @@
  * with this source code in the file LICENSE.
  */
 
+namespace PHPWebAPI;
+
 abstract class AAuthentification
 {
     // return values:
