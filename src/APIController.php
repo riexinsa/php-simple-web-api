@@ -25,11 +25,11 @@ class APIController
     private $baseURI = "";
    
     // the actual informations
-    private $input;
-    private $headers;
-    private $pathElements;
-    private $table;
-    private $method;
+    private $input = "";
+    private $headers = "";
+    private $pathElements = "";
+    private $table = "";
+    private $method = "";
 
     // options requests
     private $fullfillAllOptionsRequests = false;
@@ -162,7 +162,7 @@ class APIController
         // values from the path
         $this->pathElements = array();
         foreach($rp as $val)
-            $this->pathElements[$val] = array_shift($request) + 0;
+            $this->pathElements[$val] = array_shift($request);
 
         if(is_string($fct))
         {
@@ -235,6 +235,11 @@ class APIController
         return $this->auth->checkToken($headers);
     }
 
+    public function setMethod($method)
+    {
+        $this->method = $method;
+    }
+
     public function setRequest($request)
     {
         $this->request = $request;
@@ -245,7 +250,8 @@ class APIController
     *******************************************************************************************************************/
     public function run()
     {
-        $this->method = $_SERVER["REQUEST_METHOD"];
+        if($this->method == "")
+            $this->method = $_SERVER["REQUEST_METHOD"];
 
         if($this->fullfillAllOptionsRequests && $this->method == "OPTIONS")
         {
@@ -255,9 +261,10 @@ class APIController
 
         $pathInfo = "";
         if($this->request != null)
-            $pathInfo = $this->request;
+            $pathInfo = trim($this->request, "/");
         else 
             $pathInfo = trim($_SERVER["PATH_INFO"], "/");
+
         $request = explode("/", $pathInfo);
         $this->input = json_decode(file_get_contents('php://input'),true);
         $this->headers = getallheaders();
