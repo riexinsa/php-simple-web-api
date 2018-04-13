@@ -9,7 +9,7 @@
 
 namespace PHPWebAPI;
 
-use PHPWebAPI\AVisitor;
+use PHPWebAPI\AVisitor as AVisitor;
 
 class LinkVisitor extends AVisitor
 {

@@ -18,7 +18,7 @@ abstract class AVisitor
     /*
     Abstract method, this method will be invoked for any element in given collection.
     */
-    protected abstract function visit($instance, &$element);
+    protected abstract function visit($instance, &$element, $context);
 
 
     /*

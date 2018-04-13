@@ -16,7 +16,7 @@ class APIController
     private $requestTable = array();
     // authentification class
     private $auth = null;
-    private $noCheckFor = "";
+    private $noCheckFor = array();
     // data base link
     private $db = null;
     // request if not PATH_INFO
@@ -55,8 +55,8 @@ class APIController
     // otherwise it will be returned as it is.
     public function addRequestProcessing($table, $requestType, $fct, $requestpattern, $visitor = null)
     {
-        if($visitor != null && !is_a($visitor, "AVisitor"))
-            throw new Exception("Wrong type of visitor! AVisitor expected.");
+        if($visitor != null && !is_a($visitor, "PHPWebAPI\AVisitor"))
+            throw new \Exception("Wrong type of visitor! AVisitor expected.");
         if($requestpattern != null)
             $rp = explode("/", trim($requestpattern, "/"));
         else
@@ -66,10 +66,10 @@ class APIController
 
     public function setAuthentification($auth, $route = "login", $method = "POST")
     {   
-        if(is_a($auth, "AAuthentification"))
+        if(is_a($auth, "PHPWebAPI\AAuthentification"))
         {
             $this->auth = $auth;
-            $this->noCheckFor = $route;
+            array_push($this->noCheckFor, $route);
             $this->addRequestProcessing
             (
                 $route, $method, 
@@ -77,23 +77,25 @@ class APIController
                 {
                     $res = $auth->login($instance);
                     if(is_string($res))
-                        return $this->httpResponse(401, $res);
+                        return $this->httpResponse(401, json_encode(array("error" => $res)));
                     return $this->httpResponse(200, null, $res);
                 },
                 ""
             );
         }
         else 
-            throw new Exception("Wrong type for authentification! AAuthentification expected.");
+            throw new \Exception("Wrong type for authentification! AAuthentification expected.");
     }
 
     public function registerDataBaseHandler($db)
     {
         //print($db);
-        if(is_a($db, "ADataBase"))
+        if(is_a($db, "PHPWebAPI\ADataBase"))
             $this->db = $db;
         else 
-            throw new Exception("Wrong type of database! DataBase expected.");
+        {
+            throw new \Exception("Wrong type of database! DataBase expected.");
+        }
     }
 
     public function httpResponse($code, $content, $headers = array())
@@ -149,12 +151,7 @@ class APIController
         $visitor = $this->requestTable[$this->table][$this->method]["vis"];
         if($visitor == null)
             return;
-        $visitor->prepare();
         $visitor->visitElements($this, $results);
-        $visitor->finish();
-/*      foreach($results as &$element)
-            $visitor->visit($this, $element);
-*/
     }
 
     private function executeRequest($request)
@@ -223,6 +220,11 @@ class APIController
         $this->fullfillAllOptionsRequests = $value;
     }
 
+    public function addUnCheckedEndPoint($name)
+    {
+        array_push($this->noCheckFor, $name);
+    }
+
     /*******************************************************************************************************************
     login handlers
     *******************************************************************************************************************/
@@ -261,7 +263,7 @@ class APIController
         $this->headers = getallheaders();
         $this->table = preg_replace('/[^a-z0-9_]+/i','',array_shift($request));
 
-        if($this->table != $this->noCheckFor)
+        if(!in_array($this->table, $this->noCheckFor))
         {
             if(!$this->checkToken($this))
             {
